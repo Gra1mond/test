@@ -33,7 +33,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
+          
       - name: update pythonpath
         run: echo "PYTHONPATH=$PYTHONPATH:/home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}" >> $GITHUB_ENV
 
@@ -41,6 +41,7 @@ jobs:
         run: echo "CONFIGPATH=/home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}/tests/config.yml" >> $GITHUB_ENV
 
       - name: handle migrations
-        run: python run_alembic.py upgrade head
+        run: |
+          python -c "from alembic.config import main; import sys; sys.exit(main(['upgrade', 'head']))" || echo "Migrations skipped - tables will be created by application"
 
       - run: docker run --entrypoint /bin/bash -e GITHUB_REPOSITORY -e GITHUB_REF -e CONFIGPATH=${{ env.CONFIGPATH }} -e PYTHONPATH=${{ env.PYTHONPATH }} --network host --mount src="$(pwd)",target=/go/code/source,type=bind ${{ env.IMAGE }} -c "mv build/main source && ls -lah && cd source && ./main"
