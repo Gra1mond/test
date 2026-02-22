@@ -8,13 +8,15 @@ from sqlalchemy import pool
 from alembic import context
 
 # Добавляем корневую директорию в путь
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, BASE_DIR)
 
 # Импортируем модели и BaseModel
+# Это нужно для autogenerate миграций
 from app.store.database.sqlalchemy_base import BaseModel
 # Импортируем все модели для autogenerate
-from app.admin.models import AdminModel
-from app.quiz.models import ThemeModel, QuestionModel, AnswerModel
+from app.admin.models import AdminModel  # noqa: F401
+from app.quiz.models import ThemeModel, QuestionModel, AnswerModel  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
