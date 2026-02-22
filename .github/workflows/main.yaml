@@ -39,6 +39,6 @@ jobs:
         run: echo "CONFIGPATH=/home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}/tests/config.yml" >> $GITHUB_ENV
 
       - name: handle migrations
-        run: python -m alembic upgrade head
+        run: python run_alembic.py upgrade head
 
       - run: docker run --entrypoint /bin/bash -e GITHUB_REPOSITORY -e GITHUB_REF -e CONFIGPATH=${{ env.CONFIGPATH }} -e PYTHONPATH=${{ env.PYTHONPATH }} --network host --mount src="$(pwd)",target=/go/code/source,type=bind ${{ env.IMAGE }} -c "mv build/main source && ls -lah && cd source && ./main"
